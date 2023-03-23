@@ -1,7 +1,5 @@
 package com.construlider.fluxocaixa.service;
 
-import com.construlider.fluxocaixa.models.Categoria;
-import com.construlider.fluxocaixa.models.Despesa;
 import com.construlider.fluxocaixa.models.Produto;
 import com.construlider.fluxocaixa.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +23,14 @@ public class ProdutoService {
     public Produto findById(int id){
         return produtoRepository.findById(id).orElseThrow();
     }
+    public Produto update(int id, Produto novoProduto){
+        Produto produto = this.findById(id);
+        produto.setNome(novoProduto.getNome());
+        produtoRepository.save(produto);
+        return produto;
+    }
     public void deleteById(int id){
         produtoRepository.deleteById(id);
     }
-    public List<Despesa> getDespesasDoProduto(Produto produto){
-        return produtoRepository.despesasDoProduto(produto);
-    }
+
 }

@@ -1,6 +1,5 @@
 package com.construlider.fluxocaixa.controllers;
 
-import com.construlider.fluxocaixa.models.Despesa;
 import com.construlider.fluxocaixa.models.Produto;
 import com.construlider.fluxocaixa.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,13 @@ import java.util.List;
 public class ProdutoController {
     @Autowired
     private ProdutoService produtoService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Produto> buscaProdutoPorId(@PathVariable int id){
+        var produto = produtoService.findById(id);
+        return new ResponseEntity<>(produto, HttpStatus.OK);
+//        return ResponseEntity.ok().body(produto);
+    }
     @GetMapping("/")
     public ResponseEntity<List<Produto>> buscaProdutos(){
         var produtos = produtoService.findAll();
@@ -26,10 +32,16 @@ public class ProdutoController {
         var produtoNovo = produtoService.create(produto);
         return new ResponseEntity<>(produtoNovo, HttpStatus.CREATED);
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Despesa>> buscaProdutosDaCategoria(@PathVariable int id){
-        var produto = produtoService.findById(id);
-        System.out.println(produto);
-        return new ResponseEntity<>(produtoService.getDespesasDoProduto(produto), HttpStatus.OK);
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Produto> atualizaProduto(@PathVariable int id, @RequestBody Produto novoProduto){
+        var produto = produtoService.update(id, novoProduto);
+        return new ResponseEntity<>(produto, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletaProduto(@PathVariable int id){
+        produtoService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,11 +1,9 @@
 package com.construlider.fluxocaixa.repository;
 
-import com.construlider.fluxocaixa.models.Categoria;
+import com.construlider.fluxocaixa.models.Pessoa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoriaRepository extends JpaRepository<Categoria, Integer> {
-
-
+public interface PessoaRepository extends JpaRepository<Pessoa, Integer> {
 }

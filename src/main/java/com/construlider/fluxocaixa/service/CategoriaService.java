@@ -1,8 +1,6 @@
 package com.construlider.fluxocaixa.service;
 
 import com.construlider.fluxocaixa.models.Categoria;
-import com.construlider.fluxocaixa.models.Despesa;
-import com.construlider.fluxocaixa.models.Produto;
 import com.construlider.fluxocaixa.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,9 +27,7 @@ public class CategoriaService {
     public void deleteById(int id){
         categoriaRepository.deleteById(id);
     }
-    public List<Despesa> getDespesasDaCategoria(Categoria categoria){
-        return categoriaRepository.despesasDaCategoria(categoria);
-    }
+
 
 
 }
