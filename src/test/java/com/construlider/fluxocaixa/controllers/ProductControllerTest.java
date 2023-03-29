@@ -1,7 +1,7 @@
 package com.construlider.fluxocaixa.controllers;
 
-import com.construlider.fluxocaixa.models.Produto;
-import com.construlider.fluxocaixa.service.ProdutoService;
+import com.construlider.fluxocaixa.models.Product;
+import com.construlider.fluxocaixa.service.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,22 +13,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
-class ProdutoControllerTest {
+class ProductControllerTest {
 
     public static final String NOME = "maquina";
     private static final int ID = 1;
     private static final int INDEX = 0;
 
-    private Produto produto = new Produto();
+    private Product product = new Product();
     @InjectMocks
-    private ProdutoController produtoController;
+    private ProductController productController;
     @Mock
-    private ProdutoService produtoService;
+    private ProductService productService;
 
 
 
@@ -41,8 +40,8 @@ class ProdutoControllerTest {
 
     @Test
     void quandoBuscaProdutoPorIdRetornaSucesso() {
-        Mockito.when(produtoService.findById(Mockito.anyInt())).thenReturn(produto);
-        ResponseEntity<Produto> response = produtoController.buscaProdutoPorId(ID);
+        Mockito.when(productService.findById(Mockito.anyInt())).thenReturn(product);
+        ResponseEntity<Product> response = productController.findById(ID);
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getBody());
@@ -50,35 +49,35 @@ class ProdutoControllerTest {
         System.out.println(response.getBody());
 
         Assertions.assertEquals(ResponseEntity.class, response.getClass());
-        Assertions.assertEquals(Produto.class, response.getBody().getClass());
+        Assertions.assertEquals(Product.class, response.getBody().getClass());
 
         assertEquals(ID, response.getBody().getId());
-        assertEquals(NOME, response.getBody().getNome());
+        assertEquals(NOME, response.getBody().getName());
 
 
     }
 
     @Test
     void quandoBuscaProdutosRetornaUmaListaDeProduto() {
-        Mockito.when(produtoService.findAll()).thenReturn(List.of(produto));
-        ResponseEntity<List<Produto>> response = produtoController.buscaProdutos();
+        Mockito.when(productService.findAll()).thenReturn(List.of(product));
+        ResponseEntity<List<Product>> response = productController.findAll();
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getBody());
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(ResponseEntity.class, response.getClass());
 //        Assertions.assertEquals(ArrayList.class, response.getBody().getClass());
-        Assertions.assertEquals(Produto.class, response.getBody().get(INDEX).getClass());
+        Assertions.assertEquals(Product.class, response.getBody().get(INDEX).getClass());
 
         assertEquals(ID, response.getBody().get(0).getId());
-        assertEquals(NOME, response.getBody().get(0).getNome());
+        assertEquals(NOME, response.getBody().get(0).getName());
     }
 
     @Test
     void quandoCriaProdutoRetornaCriado() {
-        Mockito.when(produtoService.create(Mockito.any())).thenReturn(produto);
+        Mockito.when(productService.create(Mockito.any())).thenReturn(product);
 
-        ResponseEntity<Produto> response = produtoController.criaProduto(produto);
+        ResponseEntity<Product> response = productController.create(product);
 
         assertEquals(ResponseEntity.class, response.getClass());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -86,36 +85,36 @@ class ProdutoControllerTest {
 
     @Test
     void quandoAtualizaProdutoRetornaSucesso() {
-        Mockito.when(produtoService.update(ID, produto)).thenReturn(produto);
+        Mockito.when(productService.update(ID, product)).thenReturn(product);
 
-        ResponseEntity<Produto> response = produtoController.atualizaProduto(ID, produto);
+        ResponseEntity<Product> response = productController.update(ID, product);
 
         Assertions.assertNotNull(response);
         Assertions.assertNotNull(response.getBody());
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
         Assertions.assertEquals(ResponseEntity.class, response.getClass());
-        Assertions.assertEquals(Produto.class, response.getBody().getClass());
+        Assertions.assertEquals(Product.class, response.getBody().getClass());
 
         Assertions.assertEquals(ID, response.getBody().getId());
-        Assertions.assertEquals(NOME, response.getBody().getNome());
+        Assertions.assertEquals(NOME, response.getBody().getName());
     }
 
     @Test
     void quandoDeletaProdutoEntaoRetornaSucesso() {
-        Mockito.doNothing().when(produtoService).deleteById(Mockito.anyInt());
+        Mockito.doNothing().when(productService).deleteById(Mockito.anyInt());
 
-        ResponseEntity response = produtoController.deletaProduto(ID);
+        ResponseEntity response = productController.delete(ID);
 
         assertNotNull(response);
         assertEquals(ResponseEntity.class, response.getClass());
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        Mockito.verify(produtoService, Mockito.times(1)).deleteById(Mockito.anyInt());
+        Mockito.verify(productService, Mockito.times(1)).deleteById(Mockito.anyInt());
 
     }
 
     private void startProduto(){
-        produto = new Produto();
-        produto.setId(ID);
-        produto.setNome(NOME);
+        product = new Product();
+        product.setId(ID);
+        product.setName(NOME);
     }
 }
