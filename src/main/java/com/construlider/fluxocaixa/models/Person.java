@@ -1,22 +1,21 @@
 package com.construlider.fluxocaixa.models;
 
-import com.construlider.fluxocaixa.models.enums.TipoPessoa;
+import com.construlider.fluxocaixa.models.enums.TypePerson;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class Pessoa {
+public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String nome;
-    private String telefone;
+    private String name;
+    private String phoneNumber;
     private String email;
     @Embedded
-    private Endereco endereco;
-    private TipoPessoa tipoPessoa;
+    private Adress adress;
+    private TypePerson typePerson;
 }
