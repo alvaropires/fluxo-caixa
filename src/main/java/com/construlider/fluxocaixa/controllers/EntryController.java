@@ -1,6 +1,10 @@
 package com.construlider.fluxocaixa.controllers;
 
+import com.construlider.fluxocaixa.dto.request.EntryRequest;
+import com.construlider.fluxocaixa.dto.response.EntryResponse;
+import com.construlider.fluxocaixa.models.Category;
 import com.construlider.fluxocaixa.models.Entry;
+import com.construlider.fluxocaixa.models.Product;
 import com.construlider.fluxocaixa.models.enums.TypeEntry;
 import com.construlider.fluxocaixa.service.CategoryService;
 import com.construlider.fluxocaixa.service.EntryService;
@@ -26,27 +30,32 @@ public class EntryController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Entry>> findAll(){
-        var entries = entryService.findAll();
-        return new ResponseEntity<List<Entry>>(entries, HttpStatus.OK);
+    public ResponseEntity<List<EntryResponse>> findAll(){
+        List<Entry> entries = entryService.findAll();
+        List<EntryResponse> entryResponseList = entryService.toEntryResponseList(entries);
+        return new ResponseEntity<>(entryResponseList, HttpStatus.OK);
     }
 
     @PostMapping("/")
-    public ResponseEntity<Entry> create(@RequestBody Entry entry){
-        var createdEntry = entryService.create(entry);
-        return new ResponseEntity<>(createdEntry, HttpStatus.CREATED);
+    public ResponseEntity<EntryResponse> create(@RequestBody EntryRequest entryRequest){
+        Entry entry = entryService.toEntry(entryRequest);
+        entryService.create(entry);
+        EntryResponse entryResponse = entryService.toEntryResponse(entry);
+        return new ResponseEntity<>(entryResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Entry> findById(@PathVariable int id){
-        var entry = entryService.findById(id);
-        return new ResponseEntity<>(entry, HttpStatus.OK);
+    public ResponseEntity<EntryResponse> findById(@PathVariable int id){
+        Entry entry = entryService.findById(id);
+        EntryResponse entryResponse = entryService.toEntryResponse(entry);
+        return new ResponseEntity<>(entryResponse, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Entry> update(@PathVariable int id, @RequestBody Entry updatedEntry){
-        var entry = entryService.update(id, updatedEntry);
-        return new ResponseEntity<>(entry, HttpStatus.CREATED);
+    public ResponseEntity<EntryResponse> update(@PathVariable int id, @RequestBody EntryRequest entryRequest){
+        Entry entry = entryService.update(id, entryService.toEntry(entryRequest));
+        EntryResponse entryResponse = entryService.toEntryResponse(entry);
+        return new ResponseEntity<>(entryResponse, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -56,19 +65,24 @@ public class EntryController {
     }
 
     @GetMapping("category/{id}")
-    public ResponseEntity<List<Entry>> findEntriesFromCategory(@PathVariable int id){
-        var categories = categoryService.findById(id);
-        return new ResponseEntity<>(entryService.getEntriesFromCategory(categories), HttpStatus.OK);
+    public ResponseEntity<List<EntryResponse>> findEntriesFromCategory(@PathVariable int id){
+        Category category = categoryService.findById(id);
+        List<Entry> entries = entryService.getEntriesFromCategory(category);
+        List<EntryResponse> entryResponseList = entryService.toEntryResponseList(entries);
+        return new ResponseEntity<>(entryResponseList, HttpStatus.OK);
     }
     @GetMapping("product/{id}")
-    public ResponseEntity<List<Entry>> findEntriesFromProduct(@PathVariable int id){
-        var products = productService.findById(id);
-        return new ResponseEntity<>(entryService.getEntriesFromProduct(products), HttpStatus.OK);
+    public ResponseEntity<List<EntryResponse>> findEntriesFromProduct(@PathVariable int id){
+        Product product = productService.findById(id);
+        List<Entry> entries = entryService.getEntriesFromProduct(product);
+        List<EntryResponse> entryResponseList = entryService.toEntryResponseList(entries);
+        return new ResponseEntity<>(entryResponseList, HttpStatus.OK);
     }
 
     @GetMapping("type-entry/{typeEntry}")
-    public ResponseEntity<List<Entry>> getEntriesFromTypeEntry(@PathVariable TypeEntry typeEntry){
-        var entries = entryService.getEntriesFromTypeEntry(typeEntry);
-        return new ResponseEntity<>(entries, HttpStatus.OK);
+    public ResponseEntity<List<EntryResponse>> getEntriesFromTypeEntry(@PathVariable TypeEntry typeEntry){
+        List<Entry> entries = entryService.getEntriesFromTypeEntry(typeEntry);
+        List<EntryResponse> entryResponseList = entryService.toEntryResponseList(entries);
+        return new ResponseEntity<>(entryResponseList, HttpStatus.OK);
     }
 }

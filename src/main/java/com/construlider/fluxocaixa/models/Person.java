@@ -17,5 +17,6 @@ public class Person {
     private String email;
     @Embedded
     private Adress adress;
+    @Enumerated(EnumType.STRING)
     private TypePerson typePerson;
 }

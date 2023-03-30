@@ -1,16 +1,27 @@
 package com.construlider.fluxocaixa.service;
 
+import com.construlider.fluxocaixa.dto.request.PersonRequest;
+import com.construlider.fluxocaixa.dto.response.PersonResponse;
 import com.construlider.fluxocaixa.models.Person;
 import com.construlider.fluxocaixa.repository.PersonRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
+    private final PersonRepository personRepository;
+    private final ModelMapper modelMapper;
+
     @Autowired
-    private PersonRepository personRepository;
+    public PersonService(PersonRepository personRepository, ModelMapper modelMapper) {
+        this.personRepository = personRepository;
+        this.modelMapper = modelMapper;
+    }
+
 
     public List<Person> findAll(){
         return personRepository.findAll();
@@ -23,12 +34,28 @@ public class PersonService {
     }
 
     public Person update(int id, Person personUpdated){
-        var pessoa = this.findById(id);
-        pessoa = personUpdated;
-        return personRepository.save(pessoa);
+        var person = this.findById(id);
+        person.setName(personUpdated.getName());
+        person.setPhoneNumber(personUpdated.getPhoneNumber());
+        person.setEmail(personUpdated.getEmail());
+        person.setAdress(personUpdated.getAdress());
+        person.setTypePerson(personUpdated.getTypePerson());
+        return personRepository.save(person);
     }
     public void delete(int id){
         personRepository.deleteById(id);
+    }
+
+    public PersonResponse toPersonResponse(Person person){
+        return modelMapper.map(person, PersonResponse.class);
+    }
+
+    public List<PersonResponse> toPersonResponseList(List<Person> personList){
+        return personList.stream().map(this::toPersonResponse).collect(Collectors.toList());
+    }
+
+    public Person toPerson(PersonRequest personRequest){
+        return modelMapper.map(personRequest, Person.class);
     }
 
 }
