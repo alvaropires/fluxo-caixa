@@ -1,5 +1,7 @@
 package com.construlider.fluxocaixa.controllers;
 
+import com.construlider.fluxocaixa.dto.request.ProductRequest;
+import com.construlider.fluxocaixa.dto.response.ProductResponse;
 import com.construlider.fluxocaixa.models.Product;
 import com.construlider.fluxocaixa.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,26 +18,31 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> findById(@PathVariable int id){
-        var product = productService.findById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+    public ResponseEntity<ProductResponse> findById(@PathVariable int id){
+        Product product = productService.findById(id);
+        ProductResponse productResponse = productService.toProductResponse(product);
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
     @GetMapping("/")
-    public ResponseEntity<List<Product>> findAll(){
-        var products = productService.findAll();
-        return new ResponseEntity<>(products, HttpStatus.OK);
+    public ResponseEntity<List<ProductResponse>> findAll(){
+        List<Product> products = productService.findAll();
+        List<ProductResponse> productResponseList = productService.toProductResponseList(products);
+        return new ResponseEntity<>(productResponseList, HttpStatus.OK);
     }
 
     @PostMapping("/")
-    public ResponseEntity<Product> create(@RequestBody Product product){
-        var createdProduct = productService.create(product);
-        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+    public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest productRequest){
+        Product product = productService.toProduct(productRequest);
+        productService.create(product);
+        ProductResponse productResponse = productService.toProductResponse(product);
+        return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable int id, @RequestBody Product updatedProduct){
-        var product = productService.update(id, updatedProduct);
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+    public ResponseEntity<ProductResponse> update(@PathVariable int id, @RequestBody ProductRequest productRequest){
+        Product product = productService.update(id, productService.toProduct(productRequest));
+        ProductResponse productResponse = productService.toProductResponse(product);
+        return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
