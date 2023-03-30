@@ -4,6 +4,7 @@ import com.construlider.fluxocaixa.dto.request.EntryRequest;
 import com.construlider.fluxocaixa.dto.response.EntryResponse;
 import com.construlider.fluxocaixa.models.Category;
 import com.construlider.fluxocaixa.models.Entry;
+import com.construlider.fluxocaixa.models.Person;
 import com.construlider.fluxocaixa.models.Product;
 import com.construlider.fluxocaixa.models.enums.TypeEntry;
 import com.construlider.fluxocaixa.repository.EntryRepository;
@@ -21,13 +22,15 @@ public class EntryService {
     private final ModelMapper modelMapper;
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final PersonService personService;
 
     @Autowired
-    public EntryService(EntryRepository entryRepository, ModelMapper modelMapper, ProductService productService, CategoryService categoryService){
+    public EntryService(EntryRepository entryRepository, ModelMapper modelMapper, ProductService productService, CategoryService categoryService, PersonService personService){
         this.entryRepository = entryRepository;
         this.modelMapper = modelMapper;
         this.productService = productService;
         this.categoryService = categoryService;
+        this.personService = personService;
     }
     public Entry create(Entry entry){
         return entryRepository.save(entry);
@@ -79,11 +82,11 @@ public class EntryService {
     public Entry toEntry(EntryRequest entryRequest){
         Product product = productService.findById(entryRequest.getProduct());
         Category category = categoryService.findById(entryRequest.getCategory());
+        Person person = personService.findById(entryRequest.getPerson());
         Entry entry = modelMapper.map(entryRequest, Entry.class);
         entry.setProduct(product);
         entry.setCategory(category);
+        entry.setPerson(person);
         return entry;
     }
-
-
 }

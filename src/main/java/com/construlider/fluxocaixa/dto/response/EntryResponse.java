@@ -28,7 +28,7 @@ public class EntryResponse {
     public String getCategory(){
         return category.getName();
     }
-//    public String getPerson(){
-//        return person.getName();
-//    }
+    public String getPerson(){
+        return person.getName();
+    }
 }
