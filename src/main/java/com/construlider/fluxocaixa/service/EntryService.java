@@ -71,6 +71,10 @@ public class EntryService {
         return entryRepository.entriesFromTypeEntry(typeEntry);
     }
 
+    public List<Entry> getEntriesFromPerson(Person person){
+        return entryRepository.entriesFromPerson(person);
+    }
+
     public EntryResponse toEntryResponse(Entry entry){
         return modelMapper.map(entry, EntryResponse.class);
     }

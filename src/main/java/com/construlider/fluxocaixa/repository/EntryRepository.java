@@ -2,6 +2,7 @@ package com.construlider.fluxocaixa.repository;
 
 import com.construlider.fluxocaixa.models.Category;
 import com.construlider.fluxocaixa.models.Entry;
+import com.construlider.fluxocaixa.models.Person;
 import com.construlider.fluxocaixa.models.Product;
 import com.construlider.fluxocaixa.models.enums.TypeEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,7 @@ public interface EntryRepository extends JpaRepository<Entry, Integer> {
     List<Entry> entriesFromProduct(@Param("product") Product product);
     @Query("SELECT e FROM Entry e WHERE e.typeEntry = :typeEntry")
     List<Entry> entriesFromTypeEntry(@Param("typeEntry") TypeEntry typeEntry);
+
+    @Query("SELECT e FROM Entry e WHERE e.person = :person")
+    List<Entry> entriesFromPerson(@Param("person")Person person);
 }
