@@ -2,6 +2,7 @@ package com.construlider.fluxocaixa.service;
 
 import com.construlider.fluxocaixa.dto.request.PersonRequest;
 import com.construlider.fluxocaixa.dto.response.PersonResponse;
+import com.construlider.fluxocaixa.exceptions.PersonNotFoundException;
 import com.construlider.fluxocaixa.models.Person;
 import com.construlider.fluxocaixa.repository.PersonRepository;
 import org.modelmapper.ModelMapper;
@@ -30,7 +31,7 @@ public class PersonService {
         return personRepository.save(person);
     }
     public Person findById(int id){
-        return personRepository.findById(id).orElseThrow();
+        return personRepository.findById(id).orElseThrow(()-> new PersonNotFoundException(id));
     }
 
     public Person update(int id, Person personUpdated){

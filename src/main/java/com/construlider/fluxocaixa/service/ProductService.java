@@ -2,9 +2,11 @@ package com.construlider.fluxocaixa.service;
 
 import com.construlider.fluxocaixa.dto.request.ProductRequest;
 import com.construlider.fluxocaixa.dto.response.ProductResponse;
+import com.construlider.fluxocaixa.exceptions.ProductNotFoundException;
 import com.construlider.fluxocaixa.models.Product;
 import com.construlider.fluxocaixa.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.PropertyAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,7 @@ public class ProductService {
     }
 
     public Product findById(int id){
-        return productRepository.findById(id).orElseThrow();
+        return productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException(id));
     }
     public Product update(int id, Product updatedProduct){
         Product product = this.findById(id);

@@ -2,6 +2,7 @@ package com.construlider.fluxocaixa.service;
 
 import com.construlider.fluxocaixa.dto.request.EntryRequest;
 import com.construlider.fluxocaixa.dto.response.EntryResponse;
+import com.construlider.fluxocaixa.exceptions.EntryNotFoundException;
 import com.construlider.fluxocaixa.models.Category;
 import com.construlider.fluxocaixa.models.Entry;
 import com.construlider.fluxocaixa.models.Person;
@@ -41,7 +42,7 @@ public class EntryService {
     }
 
     public Entry findById(int id){
-        return entryRepository.findById(id).orElseThrow();
+        return entryRepository.findById(id).orElseThrow(()-> new EntryNotFoundException(id));
     }
 
     public Entry update(int id, Entry updatedEntry){

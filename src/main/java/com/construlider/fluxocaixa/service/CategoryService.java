@@ -2,6 +2,7 @@ package com.construlider.fluxocaixa.service;
 
 import com.construlider.fluxocaixa.dto.request.CategoryRequest;
 import com.construlider.fluxocaixa.dto.response.CategoryResponse;
+import com.construlider.fluxocaixa.exceptions.CategoryNotFoundException;
 import com.construlider.fluxocaixa.models.Category;
 import com.construlider.fluxocaixa.repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
@@ -30,7 +31,7 @@ public class CategoryService {
     }
 
     public Category findById(int id){
-        return categoryRepository.findById(id).orElseThrow();
+        return categoryRepository.findById(id).orElseThrow(()-> new CategoryNotFoundException(id));
     }
 
     public Category update(int id, Category updatedCategory){
