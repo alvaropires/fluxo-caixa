@@ -7,6 +7,11 @@ import com.construlider.fluxocaixa.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +27,11 @@ public class CategoryController {
 
     @GetMapping("/")
     @Operation(description = "Find All Categories.")
-    public ResponseEntity<List<CategoryResponse>> findAll(){
-        List<Category> categories = categoryService.findAll();
-        List<CategoryResponse> categoryResponseList = categoryService.toCategoryResponseList(categories);
-        return new ResponseEntity<>(categoryResponseList, HttpStatus.OK);
+    public ResponseEntity<Page<CategoryResponse>> findAll(@PageableDefault(page = 0, size = 10, sort = "id",
+    direction = Sort.Direction.ASC)Pageable pageable){
+        Page<Category> categoriesPage = categoryService.findAll(pageable);
+        Page<CategoryResponse> categoryResponsePage = categoryService.toCategoryResponsePage(categoriesPage);
+        return new ResponseEntity<>(categoryResponsePage, HttpStatus.OK);
     }
 
     @PostMapping("/")

@@ -7,6 +7,10 @@ import com.construlider.fluxocaixa.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +33,11 @@ public class ProductController {
     }
     @GetMapping("/")
     @Operation(description = "Find All Products.")
-    public ResponseEntity<List<ProductResponse>> findAll(){
-        List<Product> products = productService.findAll();
-        List<ProductResponse> productResponseList = productService.toProductResponseList(products);
-        return new ResponseEntity<>(productResponseList, HttpStatus.OK);
+    public ResponseEntity<Page<ProductResponse>> findAll(@PageableDefault(page = 0, size = 10, sort = "id",
+            direction = Sort.Direction.ASC) Pageable pageable){
+        Page<Product> productPage = productService.findAll(pageable);
+        Page<ProductResponse> productResponsePage = productService.toProductResponsePage(productPage);
+        return new ResponseEntity<>(productResponsePage, HttpStatus.OK);
     }
 
     @PostMapping("/")

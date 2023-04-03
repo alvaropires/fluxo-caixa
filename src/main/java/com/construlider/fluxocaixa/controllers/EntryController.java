@@ -13,6 +13,11 @@ import com.construlider.fluxocaixa.service.PersonService;
 import com.construlider.fluxocaixa.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +33,7 @@ public class EntryController {
     private CategoryService categoryService;
     private ProductService productService;
     private PersonService personService;
-
+    @Autowired
     public EntryController(EntryService entryService, CategoryService categoryService, ProductService productService, PersonService personService) {
         this.entryService = entryService;
         this.categoryService = categoryService;
@@ -38,10 +43,12 @@ public class EntryController {
 
     @GetMapping("/")
     @Operation(description = "Find All Entries.")
-    public ResponseEntity<List<EntryResponse>> findAll(){
-        List<Entry> entries = entryService.findAll();
-        List<EntryResponse> entryResponseList = entryService.toEntryResponseList(entries);
-        return new ResponseEntity<>(entryResponseList, HttpStatus.OK);
+    public ResponseEntity<Page<EntryResponse>> findAll(@PageableDefault(page = 0, size = 10, sort = "id",
+            direction = Sort.Direction.ASC) Pageable pageable,
+                                                       @RequestParam(required = false) String flag){
+        Page<Entry> entryPage = entryService.findAll(pageable, flag);
+        Page<EntryResponse> entryResponsePage = entryService.toEntryResponsePage(entryPage);
+        return new ResponseEntity<>(entryResponsePage, HttpStatus.OK);
     }
 
     @PostMapping("/")
@@ -78,35 +85,30 @@ public class EntryController {
 
     @GetMapping("category/{id}")
     @Operation(description = "Find Entries By Category.")
-    public ResponseEntity<List<EntryResponse>> findEntriesFromCategory(@PathVariable int id){
+    public ResponseEntity<Page<EntryResponse>> findEntriesFromCategory(@PathVariable int id, @PageableDefault(page = 0, size = 10, sort = "id",
+            direction = Sort.Direction.ASC) Pageable pageable){
         Category category = categoryService.findById(id);
-        List<Entry> entries = entryService.getEntriesFromCategory(category);
-        List<EntryResponse> entryResponseList = entryService.toEntryResponseList(entries);
-        return new ResponseEntity<>(entryResponseList, HttpStatus.OK);
+        Page<Entry> entryPage = entryService.getEntriesFromCategory(category, pageable);
+        Page<EntryResponse> entryResponsePage = entryService.toEntryResponsePage(entryPage);
+        return new ResponseEntity<>(entryResponsePage, HttpStatus.OK);
     }
     @GetMapping("product/{id}")
     @Operation(description = "Find Entries By Product.")
-    public ResponseEntity<List<EntryResponse>> findEntriesFromProduct(@PathVariable int id){
+    public ResponseEntity<Page<EntryResponse>> findEntriesFromProduct(@PathVariable int id, @PageableDefault(page = 0, size = 10, sort = "id",
+            direction = Sort.Direction.ASC) Pageable pageable){
         Product product = productService.findById(id);
-        List<Entry> entries = entryService.getEntriesFromProduct(product);
-        List<EntryResponse> entryResponseList = entryService.toEntryResponseList(entries);
-        return new ResponseEntity<>(entryResponseList, HttpStatus.OK);
-    }
-
-    @GetMapping("type-entry/{typeEntry}")
-    @Operation(description = "Find Entries By Type of Entry (EXPENSE/INCOME).")
-    public ResponseEntity<List<EntryResponse>> getEntriesFromTypeEntry(@PathVariable TypeEntry typeEntry){
-        List<Entry> entries = entryService.getEntriesFromTypeEntry(typeEntry);
-        List<EntryResponse> entryResponseList = entryService.toEntryResponseList(entries);
-        return new ResponseEntity<>(entryResponseList, HttpStatus.OK);
+        Page<Entry> entryPage = entryService.getEntriesFromProduct(product, pageable);
+        Page<EntryResponse> entryResponsePage = entryService.toEntryResponsePage(entryPage);
+        return new ResponseEntity<>(entryResponsePage, HttpStatus.OK);
     }
 
     @GetMapping("person/{id}")
     @Operation(description = "Find Entries By Person.")
-    public ResponseEntity<List<EntryResponse>> getEntriesFromPerson(@PathVariable int id){
+    public ResponseEntity<Page<EntryResponse>> getEntriesFromPerson(@PathVariable int id, @PageableDefault(page = 0, size = 10, sort = "id",
+            direction = Sort.Direction.ASC) Pageable pageable){
         Person person = personService.findById(id);
-        List<Entry> entries = entryService.getEntriesFromPerson(person);
-        List<EntryResponse> entryResponseList = entryService.toEntryResponseList(entries);
-        return new ResponseEntity<>(entryResponseList, HttpStatus.OK);
+        Page<Entry> entryPage = entryService.getEntriesFromPerson(person, pageable);
+        Page<EntryResponse> entryResponsePage = entryService.toEntryResponsePage(entryPage);
+        return new ResponseEntity<>(entryResponsePage, HttpStatus.OK);
     }
 }

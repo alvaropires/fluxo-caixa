@@ -8,6 +8,8 @@ import com.construlider.fluxocaixa.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.PropertyAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +33,9 @@ public class ProductService {
     public List<Product> findAll(){
         return productRepository.findAll();
     }
+    public Page<Product> findAll(Pageable pageable){
+        return productRepository.findAll(pageable);
+    }
 
     public Product findById(int id){
         return productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException(id));
@@ -52,6 +57,9 @@ public class ProductService {
     }
     public Product toProduct(ProductRequest productRequest){
         return modelMapper.map(productRequest, Product.class);
+    }
+    public Page<ProductResponse> toProductResponsePage(Page<Product> productPage){
+        return productPage.map(this::toProductResponse);
     }
 
 }

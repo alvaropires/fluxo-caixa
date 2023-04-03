@@ -11,6 +11,8 @@ import com.construlider.fluxocaixa.models.enums.TypeEntry;
 import com.construlider.fluxocaixa.repository.EntryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,6 +42,16 @@ public class EntryService {
     public List<Entry> findAll(){
         return entryRepository.findAll();
     }
+    public Page<Entry> findAll(Pageable pageable, String flag){
+        if(flag!= null && flag.equals("expense")){
+            return entryRepository.entriesFromTypeEntry(TypeEntry.EXPENSE, pageable);
+        }
+        else if(flag != null && flag.equals("income")){
+            return entryRepository.entriesFromTypeEntry(TypeEntry.INCOME, pageable);
+        }else {
+            return entryRepository.findAll(pageable);
+        }
+    }
 
     public Entry findById(int id){
         return entryRepository.findById(id).orElseThrow(()-> new EntryNotFoundException(id));
@@ -62,18 +74,15 @@ public class EntryService {
     public void deleteById(int id){
         entryRepository.deleteById(id);
     }
-    public List<Entry> getEntriesFromCategory(Category category){
-        return entryRepository.entriesFromCategory(category);
+    public Page<Entry> getEntriesFromCategory(Category category, Pageable pageable){
+        return entryRepository.entriesFromCategory(category, pageable);
     }
-    public List<Entry> getEntriesFromProduct(Product product){
-        return entryRepository.entriesFromProduct(product);
-    }
-    public List<Entry> getEntriesFromTypeEntry(TypeEntry typeEntry){
-        return entryRepository.entriesFromTypeEntry(typeEntry);
+    public Page<Entry> getEntriesFromProduct(Product product, Pageable pageable){
+        return entryRepository.entriesFromProduct(product, pageable);
     }
 
-    public List<Entry> getEntriesFromPerson(Person person){
-        return entryRepository.entriesFromPerson(person);
+    public Page<Entry> getEntriesFromPerson(Person person, Pageable pageable){
+        return entryRepository.entriesFromPerson(person, pageable);
     }
 
     public EntryResponse toEntryResponse(Entry entry){
@@ -93,5 +102,8 @@ public class EntryService {
         entry.setCategory(category);
         entry.setPerson(person);
         return entry;
+    }
+    public Page<EntryResponse> toEntryResponsePage(Page<Entry> entryPage){
+        return entryPage.map(this::toEntryResponse);
     }
 }
