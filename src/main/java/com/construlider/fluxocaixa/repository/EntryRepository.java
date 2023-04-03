@@ -5,6 +5,8 @@ import com.construlider.fluxocaixa.models.Entry;
 import com.construlider.fluxocaixa.models.Person;
 import com.construlider.fluxocaixa.models.Product;
 import com.construlider.fluxocaixa.models.enums.TypeEntry;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,13 +18,13 @@ import java.util.List;
 public interface EntryRepository extends JpaRepository<Entry, Integer> {
 
     @Query("SELECT e FROM Entry e WHERE e.category = :category")
-    List<Entry> entriesFromCategory(@Param("category") Category category);
+    Page<Entry> entriesFromCategory(@Param("category") Category category, Pageable pageable);
 
     @Query("SELECT e FROM Entry e WHERE e.product = :product")
-    List<Entry> entriesFromProduct(@Param("product") Product product);
+    Page<Entry> entriesFromProduct(@Param("product") Product produc, Pageable pageable);
     @Query("SELECT e FROM Entry e WHERE e.typeEntry = :typeEntry")
-    List<Entry> entriesFromTypeEntry(@Param("typeEntry") TypeEntry typeEntry);
+    Page<Entry> entriesFromTypeEntry(@Param("typeEntry") TypeEntry typeEntry, Pageable pageable);
 
     @Query("SELECT e FROM Entry e WHERE e.person = :person")
-    List<Entry> entriesFromPerson(@Param("person")Person person);
+    Page<Entry> entriesFromPerson(@Param("person")Person person, Pageable pageable);
 }

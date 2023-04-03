@@ -84,7 +84,7 @@ public class DummyData {
         adress2.setDistrict("centro");
         adress2.setCity("Campanário");
         adress2.setState("Minas Gerais");
-        person1.setAdress(adress2);
+        person2.setAdress(adress2);
 
         personList.add(person1);
         personList.add(person2);

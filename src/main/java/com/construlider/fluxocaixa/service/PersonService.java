@@ -7,6 +7,8 @@ import com.construlider.fluxocaixa.models.Person;
 import com.construlider.fluxocaixa.repository.PersonRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +28,9 @@ public class PersonService {
 
     public List<Person> findAll(){
         return personRepository.findAll();
+    }
+    public Page<Person> findAll(Pageable pageable){
+        return personRepository.findAll(pageable);
     }
     public Person create(Person person){
         return personRepository.save(person);
@@ -57,6 +62,9 @@ public class PersonService {
 
     public Person toPerson(PersonRequest personRequest){
         return modelMapper.map(personRequest, Person.class);
+    }
+    public Page<PersonResponse> toPersonResponsePage(Page<Person> personPage){
+        return personPage.map(this::toPersonResponse);
     }
 
 }

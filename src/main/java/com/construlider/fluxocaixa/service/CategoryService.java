@@ -7,6 +7,9 @@ import com.construlider.fluxocaixa.models.Category;
 import com.construlider.fluxocaixa.repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +31,10 @@ public class CategoryService {
 
     public List<Category> findAll(){
         return categoryRepository.findAll();
+    }
+
+    public Page<Category> findAll(Pageable pageable){
+        return categoryRepository.findAll(pageable);
     }
 
     public Category findById(int id){
@@ -52,8 +59,13 @@ public class CategoryService {
         return categories.stream().map(this::toCategoryResponse).collect(Collectors.toList());
     }
 
+
     public Category toCategory(CategoryRequest categoryRequest){
         return modelMapper.map(categoryRequest, Category.class);
+    }
+
+    public Page<CategoryResponse> toCategoryResponsePage(Page<Category> categoryPage){
+        return categoryPage.map(this::toCategoryResponse);
     }
 
 
